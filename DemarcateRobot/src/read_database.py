@@ -1,7 +1,8 @@
 
+from app_config import *
 def read_infrainit_data(robot,arg):
     try:
-        sqlHandle = sqlite3.connect("Robot.db")
+        sqlHandle = sqlite3.connect(DATABASE_PATH)
         sqlInterface = sqlHandle.cursor()
         sql = 'SELECT infra_ultra FROM RobotCalibration WHERE robot_id = "%s" ' % (robot.robot_id)    
         RobotDB_Interface.execute(sql)

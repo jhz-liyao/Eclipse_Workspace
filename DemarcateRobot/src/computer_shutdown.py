@@ -4,6 +4,7 @@ from sys_env import *
 from protocol import *
 import time
 import os
+from app_config import *
     
 #--------------------相机标定主函数-----------------------------
 if __name__ == '__main__':
@@ -28,7 +29,7 @@ if __name__ == '__main__':
             print u'  关机完成! '
 
             import os
-            os.system('start F:\pyserver\close_home_computer.bat')
+            os.system('start'+ROBOT_PATH+'close_home_computer.bat')
 
         '''
         elif N=='h':

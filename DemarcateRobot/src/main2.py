@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*-
-
 from serverTool import *
 import sqlite3
 import os
@@ -9,8 +8,9 @@ from time import *
 from protocol import *
 from process import *
 from rotaryinit import *
+from app_config import *
 
-sqlHandle = sqlite3.connect("Robot.db")
+sqlHandle = sqlite3.connect(DATABASE_PATH)
 sqlInterface = sqlHandle.cursor()
 robot_list = {}
 
@@ -24,7 +24,7 @@ def robot_task(robot):
         if item != '' and robot.cmd != 0:            
             excute_process(robot, item)
             robot.cmd = 0
-            sqlHandle = sqlite3.connect("Robot.db")
+            sqlHandle = sqlite3.connect(DATABASE_PATH)
             sqlInterface = sqlHandle.cursor()
             sql = 'DELETE FROM robot_list WHERE robot_id = "%s" ' % (robot.robot_id) 
             sqlHandle.execute(sql)
@@ -81,7 +81,7 @@ def listener():
 
 sqlInterface.execute("select * from robot_list")
 robot_list_info = sqlInterface.fetchall()
-print  '--listener ready start,remove all robot_list info--'
+print  '--listener ready start,remove all robot_list info--' + ROBOT_PATH
 for robot in robot_list_info:
     robot_id =robot[1]
     sql = 'DELETE FROM robot_list WHERE robot_id = "%s" ' % (robot_id) 
@@ -104,7 +104,7 @@ for robot in robot_list_info:
 #rotary_init('')
 while 1:
     listener()
-    print 'main run'
+    print 'main run' 
     sleep(0.5)
 
 sqlHandle.close()

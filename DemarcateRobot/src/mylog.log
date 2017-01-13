@@ -1771,3 +1771,7 @@
 2016-08-06 18:41:19,558 protocol.py[line:801] [robotID:100000001269] [ERROR :camera send info error]
 2016-08-06 18:56:19,694 protocol.py[line:801] [robotID:100000001227] [ERROR :camera send info error]
 2016-08-06 18:58:51,092 protocol.py[line:801] [robotID:100000001227] [ERROR :camera send info error]
+2017-01-06 11:52:11,253 protocol.py[line:859] [robotID:100000029424] [ERROR :camera soceket connect error]
+2017-01-12 09:39:22,849 protocol.py[line:859] [robotID:100000029424] [ERROR :camera soceket connect error]
+2017-01-12 10:23:22,180 protocol.py[line:859] [robotID:100000029424] [ERROR :camera soceket connect error]
+2017-01-12 11:11:25,453 protocol.py[line:859] [robotID:100000029424] [ERROR :camera soceket connect error]

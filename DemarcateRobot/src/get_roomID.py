@@ -6,9 +6,10 @@ from cgi import parse_qs,escape
 import os
 import sys
 import time
+from app_config import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
-sys.path.append('F:\pyserver')
+sys.path.append(ROBOT_PATH)
 from serverTool import *
 from mylog import*
 
@@ -21,7 +22,7 @@ def find_roomID(robot_id,roomID,maxroom):
     if roomID[1]=='x':
         try:
             for i in range(1,(maxroom+1)):            
-                sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+                sqlHandle = sqlite3.connect(DATABASE_PATH)
                 sqlInterface = sqlHandle.cursor()
                 findroom=roomID[0]+str(i)
                 sql = 'SELECT * FROM robot_room WHERE roomID = "%s" ' % (findroom)
@@ -39,7 +40,7 @@ def find_roomID(robot_id,roomID,maxroom):
             return -2
     if int(roomID[1])>=1 and int(roomID[1])<=maxroom:
         try:
-            sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+            sqlHandle = sqlite3.connect(DATABASE_PATH)
             sqlInterface = sqlHandle.cursor()    
             sql = 'SELECT * FROM robot_room WHERE roomID = "%s" ' % (roomID)
             sqlInterface.execute(sql)
@@ -66,7 +67,7 @@ def find_roomID(robot_id,roomID,maxroom):
 # Discription:  
 #***************************************** 
 def get_roomID(robot_id,process,roomID,maxroom): 
-    sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+    sqlHandle = sqlite3.connect(DATABASE_PATH)
     sqlInterface = sqlHandle.cursor()    
     sql = 'SELECT * FROM robot_room WHERE robot_id = "%s" ' % (robot_id)
     sqlInterface.execute(sql)
@@ -83,7 +84,7 @@ def get_roomID(robot_id,process,roomID,maxroom):
     if len(ret) == 1 and process != '':        
         try:
             #print 'wert'
-            List_sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+            List_sqlHandle = sqlite3.connect(DATABASE_PATH)
             List_sqlInterface = List_sqlHandle.cursor()    
             sql = 'SELECT * FROM robot_list WHERE robot_id = "%s" ' % (robot_id)
             List_sqlInterface.execute(sql)
@@ -218,7 +219,7 @@ def get_roomID(robot_id,process,roomID,maxroom):
 # Discription:  
 #***************************************** 
 def remove_roomID(robot_id): 
-    sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+    sqlHandle = sqlite3.connect(DATABASE_PATH)
     sqlInterface = sqlHandle.cursor()    
     sql = 'SELECT * FROM robot_room WHERE robot_id = "%s" ' % (robot_id)
     sqlInterface.execute(sql)

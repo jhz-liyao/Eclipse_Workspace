@@ -1,6 +1,6 @@
 @echo on
-cd /d F:\pyserver\
+cd /d E:\LiyaoProject\eclipse_workspace\DemarcateRobot\src\
 set program=C:\Python27\python.exe
-set file=F:\pyserver\computer_shutdown.py
+set file=%cd%\computer_shutdown.py
 start "" "%program%" "%file%"
 

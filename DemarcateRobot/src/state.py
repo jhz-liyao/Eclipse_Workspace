@@ -3,8 +3,8 @@ from protocol import *
 from formula  import *
 import sqlite3
 from sys_env import *
-from time import *
-
+from time import * 
+from app_config import *
 #*****************************************
 # function:  creat_robot_state
 # Date :
@@ -24,7 +24,7 @@ def creat_robot_state(robot):
     move_check = str(set_process_state(0,[],{}))
     wheelspace_check = str(set_process_state(0,[],{}))
     #插入数据
-    RobotDB_Handle = sqlite3.connect("Robot.db")
+    RobotDB_Handle = sqlite3.connect(DATABASE_PATH)
     RobotDB_Interface = RobotDB_Handle.cursor()
     sql = 'SELECT * FROM RobotCalibration WHERE robot_id = "%s" ' % (robot.robot_id)    
     RobotDB_Interface.execute(sql)
@@ -56,7 +56,7 @@ def set_process_state(flag,data,state):
 #*****************************************
 def reset_process(robot_id,item,data):
     #重置
-    sqlHandle = sqlite3.connect("Robot.db")
+    sqlHandle = sqlite3.connect(DATABASE_PATH)
     sqlInterface = sqlHandle.cursor()
     sql = 'SELECT * FROM RobotCalibration WHERE robot_id = "%s" ' % (robot_id)
     sqlInterface.execute(sql)
@@ -77,7 +77,7 @@ def reset_process(robot_id,item,data):
 def update_process_state(robot,process,state):
     state = str(state)
     #更新数据
-    RobotDB_Handle = sqlite3.connect("Robot.db")
+    RobotDB_Handle = sqlite3.connect(DATABASE_PATH)
     RobotDB_Interface = RobotDB_Handle.cursor()
     sql = 'UPDATE calibration_evn SET  state = "%s" WHERE name = "%s"'
     data = (state,process)
@@ -102,7 +102,7 @@ def update_robot_state(robot, item, flag, data,state):
         state = state_last['state']
     st = set_process_state(flag,data,state)
     #更新数据             
-    RobotDB_Handle = sqlite3.connect("Robot.db")
+    RobotDB_Handle = sqlite3.connect(DATABASE_PATH)
     RobotDB_Interface = RobotDB_Handle.cursor()
     sql = 'UPDATE RobotCalibration SET  %s = "%s" WHERE robot_id = "%s"'
     data = (item , st, robot.robot_id)
@@ -118,7 +118,7 @@ def update_robot_state(robot, item, flag, data,state):
 # Discription:   获取process状态
 #*****************************************
 def get_process_state(robot,process):
-    RobotDB_Handle = sqlite3.connect("Robot.db")
+    RobotDB_Handle = sqlite3.connect(DATABASE_PATH)
     RobotDB_Interface = RobotDB_Handle.cursor()
     sql = 'SELECT process FROM calibration_evn WHERE robotID = "%s" ' % (robot.robot_id)
     RobotDB_Interface.execute(sql)
@@ -146,7 +146,7 @@ def get_process_state(robot,process):
 # Discription:   获取robot状态
 #*****************************************  
 def get_robot_state(robot, item):    
-    RobotDB_Handle = sqlite3.connect("Robot.db")
+    RobotDB_Handle = sqlite3.connect(DATABASE_PATH)
     RobotDB_Interface = RobotDB_Handle.cursor()
     sql = 'SELECT %s FROM RobotCalibration WHERE robot_id = "%s" ' % (item,robot.robot_id)
     RobotDB_Interface.execute(sql)

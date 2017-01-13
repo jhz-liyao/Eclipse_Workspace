@@ -5,14 +5,15 @@ import json
 from cgi import parse_qs,escape
 import os
 import sys
+from app_config import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
-sys.path.append('F:\pyserver')
+sys.path.append(ROBOT_PATH)
 from serverTool import *
 
 def app(robot_id,cmd,robot_ip):
     #--------------指令请求插入------------------------------------
-    sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+    sqlHandle = sqlite3.connect(DATABASE_PATH)
     sqlInterface = sqlHandle.cursor()    
     sql = 'SELECT * FROM robot_list WHERE robot_id = "%s" ' % (robot_id)
     sqlInterface.execute(sql)
@@ -153,8 +154,8 @@ def arr2dic(arr):
 # Date :
 # Discription:   获取robot状态
 #*****************************************  
-def get_state(robot_id, item):    
-    RobotDB_Handle = sqlite3.connect("F:\pyserver\Robot.db")
+def get_state(robot_id, item):
+    RobotDB_Handle = sqlite3.connect(DATABASE_PATH) 
     RobotDB_Interface = RobotDB_Handle.cursor()
     sql = 'SELECT %s FROM RobotCalibration WHERE robot_id = "%s" ' % (item,robot_id)    
     RobotDB_Interface.execute(sql)

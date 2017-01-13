@@ -6,9 +6,10 @@ from cgi import parse_qs,escape
 import os
 import sys
 import time
+from app_config import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
-sys.path.append('F:\pyserver')
+sys.path.append(ROBOT_PATH)
 from serverTool import *
 
 
@@ -30,7 +31,7 @@ def state_join(state):
 # Discription:   获取robot状态
 #*****************************************
 def get_state(robot_id, item):
-    RobotDB_Handle = sqlite3.connect("F:\pyserver\Robot.db")
+    RobotDB_Handle = sqlite3.connect(DATABASE_PATH)
     RobotDB_Interface = RobotDB_Handle.cursor()
     sql = 'SELECT %s FROM RobotCalibration WHERE robot_id = "%s" ' % (item,robot_id)
     RobotDB_Interface.execute(sql)
@@ -45,7 +46,7 @@ def get_state(robot_id, item):
 #***************************************** 
 def reset_process(robot_id,item,data):    
     #重置
-    sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+    sqlHandle = sqlite3.connect(DATABASE_PATH)
     sqlInterface = sqlHandle.cursor()    
     sql = 'SELECT * FROM RobotCalibration WHERE robot_id = "%s" ' % (robot_id)
     sqlInterface.execute(sql)

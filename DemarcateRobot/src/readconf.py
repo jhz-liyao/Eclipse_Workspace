@@ -9,10 +9,11 @@
 #==============================================================================
 from mylog import*
 import ConfigParser
+from app_config import ROBOT_PATH
 
 def read_configfile(option):
     conf = ConfigParser.ConfigParser()
-    conf.read("F:\pyserver\para.conf")
+    conf.read(ROBOT_PATH+"\para.conf")
 
     #获取所有的section
     #sections = conf.sections()

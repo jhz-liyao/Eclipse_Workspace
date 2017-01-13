@@ -6,6 +6,7 @@ from sys_env import *
 from time import *
 from state import *
 from readconf import *
+from app_config import *
 Occupy_wheelspace_Road_Robot_List = []
 Occupy_infra_ultra_Road_Robot_List = []
 Occupy_CL_Road_Robot_List = []
@@ -650,7 +651,7 @@ def excute_wheelspace_calibration(robot, item, arg):
     
     
     #-------------让出工位---------------------------------------
-    sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+    sqlHandle = sqlite3.connect(DATABASE_PATH)
     sqlInterface = sqlHandle.cursor()
     #sql = 'DELETE FROM robot_room WHERE robot_id = "%s" ' % (robot_id)
     sql = 'update robot_room set roomID = "%s" where robot_id = "%s"' % ('X'+roomID[1], robot.robot_id)
@@ -915,7 +916,7 @@ def excute_camera_calibration(robot, item, arg):
     #-----------获取流程工位号-----------
     print '\n','step1'
     #wing_move_angle(robot,"move",30)
-    flagr,camerainfo=read_configfile('camera')
+    flagr,camerainfo=read_configfile('camera') #获取转台标定工位距离
     if flagr==3:
         flag=3
         wing_move_angle(robot,"move",80)
@@ -1322,7 +1323,7 @@ def excute_camera_calibration(robot, item, arg):
         wheel_move_angle(robot,"right_angle", 90)
     sleep(4)
     #-------------让出工位---------------------------------------
-    sqlHandle = sqlite3.connect("F:\pyserver\Robot.db")
+    sqlHandle = sqlite3.connect(DATABASE_PATH)
     sqlInterface = sqlHandle.cursor()
     #sql = 'DELETE FROM robot_room WHERE robot_id = "%s" ' % (robot_id)
     sql = 'update robot_room set roomID = "%s" where robot_id = "%s"' % ('Y'+roomID[1], robot.robot_id)

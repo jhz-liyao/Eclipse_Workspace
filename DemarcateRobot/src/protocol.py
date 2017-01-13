@@ -13,6 +13,7 @@ import json
 from fetch_camera_data import *
 from mylog import*
 import time
+from app_config import *
 
 #---------------------global param-----------------------------------------------
 cmd_connect_header = '{"module_id":10000006,"module_name":"video","action_name":\
@@ -1049,7 +1050,7 @@ def move_to_point(robot,pointX,pointY,pointAngle):
 #*****************************************    
 def read_wheelroomID(robot,arg):
     try:
-        sqlHandle = sqlite3.connect("Robot.db")
+        sqlHandle = sqlite3.connect(DATABASE_PATH)
         sqlInterface = sqlHandle.cursor()
         sql = 'SELECT wheelspace FROM RobotCalibration WHERE robot_id = "%s" ' % (robot.robot_id)    
         sqlInterface.execute(sql)
@@ -1091,7 +1092,7 @@ def read_wheelroomID(robot,arg):
 #*****************************************    
 def read_infrainit_data(robot,arg):
     try:
-        sqlHandle = sqlite3.connect("Robot.db")
+        sqlHandle = sqlite3.connect(DATABASE_PATH)
         sqlInterface = sqlHandle.cursor()
         sql = 'SELECT infra_ultra FROM RobotCalibration WHERE robot_id = "%s" ' % (robot.robot_id)    
         sqlInterface.execute(sql)
@@ -1134,7 +1135,7 @@ def read_infrainit_data(robot,arg):
 #*****************************************    
 def get_roomID(robot, process):
     try:
-        sqlHandle = sqlite3.connect("Robot.db")
+        sqlHandle = sqlite3.connect(DATABASE_PATH)
         sqlInterface = sqlHandle.cursor()
         sql = 'SELECT roomID FROM robot_room WHERE robot_id = "%s" ' % (robot.robot_id)    
         sqlInterface.execute(sql)
