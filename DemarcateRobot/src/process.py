@@ -20,6 +20,11 @@ Occupy_R0_Robot = ""
 #*****************************************  
 def excute_process(robot, item):
     print item
+    #liyao
+    #STEP0
+    #+++++++++++++++camera_first+++++++++++++++++++++++++++++++++++++++++
+    if item == 'camera_first':
+        excute_process_calibration(excute_camera_first_calibration,robot, item,'')
     #STEP1
     #+++++++++++++++move+++++++++++++++++++++++++++++++++++++++++
     if item == 'move':
@@ -1679,5 +1684,82 @@ def excute_wheelspace_check_calibration(robot, item, arg):
     state['step_state'] = [2,2,2,2,2]
     update_robot_state(robot, item, flag, data,state)
     print '---wheelspace_calibration over---'
+     
+#*****************************************
+# function:  excute_camera_first_calibration
+# Date :
+# Discription:   执行新双目标定过程
+# 2017年1月13日 liyao
+#*****************************************  
+def excute_camera_first_calibration(robot, item, arg):
+    flag = 3
+    data = {}    
+    state = {}
+    state['step_name'] = [u"打开摄像头",u"标定图1",u"标定图2",u"标定图3",u"标定图4",u"标定图5",u"标定图6",u"标定图7",u"下一站"]    
+    state['step_state'] = [1,0,0,0,0,0,0,0,0]
+    slipway_offset = 0.0
+    pic_n = 1
+    fail_cnt = 0;
+    #step1 打开摄像头
+    camera_take_pic(robot,'open_camera');
+    #robot.connectTCP.clean() 
+    if get_json_state(robot, 'data', 'camera', 'state') == 0:
+        state['step_state'] = [3,0,0,0,0,0,0,0,0]
+        update_robot_state(robot, item, flag, data,state)
+        print '打开摄像头失败\n'
+        return 0; 
+    state['step_state'][0] = 2
+    #step2 拍摄图片
+    while 1:
+        set_picn_location(robot, pic_n)#发送图片序号并请求获取滑台位置
+        #sleep(4)
+        ret = get_slipway_location(robot) #获取滑台偏移量
+        if ret == 'fail' : 
+            state['step_state'][pic_n] = 3
+            update_robot_state(robot, item, 3, data,state)
+            print '第%d张图获取滑台偏移位置失败\n'%pic_n
+            return 0
+        slipway_offset = float(ret)
+        if slipway_offset == 0 :
+            print '开始保存图片\n'
+            camera_take_pic(robot,'photograph');#拍摄并保存图片
+            #sleep(4)
+            if get_json_state(robot, 'data', 'camera', 'state') == 1:
+                state['step_state'][pic_n] = 2
+                update_robot_state(robot, item, 2, data,state)
+                print '保存成功进行下一步\n'
+            else:
+                state['step_state'][pic_n] = 3
+                update_robot_state(robot, item, 3, data,state)
+                print '图片保存失败\n'
+                return 0    
+            print '第%d张照片标定完毕\n'%pic_n
+            if pic_n == 7 :#拍照结束
+                break;
+            else:
+                pic_n += 1
+                sleep(1);
+                continue
+        else:
+            if fail_cnt == 3 :#调整失败次数满足
+                state['step_state'][pic_n] = 3
+                update_robot_state(robot, item, flag, data,state)
+                print '转台调整3次未到位 标定失败\n'
+                return 0
+            #rotary_flag= rotary_controller('FL0',slipway_offset,0) #控制滑台运动到指定位置 
+            rotary_flag = 0
+            if rotary_flag==3:
+                flag = 3
+                wing_move_angle(robot,"move",80)
+                state['step_state'][pic_n] = 3
+                update_robot_state(robot, item, 3, data,state)
+                print '滑台调整失败\n'
+                return 0
+            sleep(5)
+            fail_cnt += 1
+            continue 
+    state['step_state'][pic_n+1] = 2 
+    update_robot_state(robot, item, 2, data,state)    
+    print '拍照标定结束\n'
+    return 1       
     
-

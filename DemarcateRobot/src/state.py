@@ -148,7 +148,7 @@ def get_process_state(robot,process):
 def get_robot_state(robot, item):    
     RobotDB_Handle = sqlite3.connect(DATABASE_PATH)
     RobotDB_Interface = RobotDB_Handle.cursor()
-    sql = 'SELECT %s FROM RobotCalibration WHERE robot_id = "%s" ' % (item,robot.robot_id)
+    sql = 'SELECT %s FROM RobotCalibration WHERE robot_id = "%s" ' % (item, robot.robot_id)
     RobotDB_Interface.execute(sql)
     ret = RobotDB_Interface.fetchall()
     RobotDB_Handle.close()

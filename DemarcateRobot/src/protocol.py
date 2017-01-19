@@ -14,6 +14,7 @@ from fetch_camera_data import *
 from mylog import*
 import time
 from app_config import *
+from time import *
 
 #---------------------global param-----------------------------------------------
 cmd_connect_header = '{"module_id":10000006,"module_name":"video","action_name":\
@@ -158,7 +159,7 @@ def camera_take_pic(robot,order):
     flag=0
     cmd_content = '"data":{"camera":{"order":"'+order+'"}}'
     cmd = "{" + cmd_camera_header + "," + cmd_content + "}\r\n"
-    print cmd
+    print 'send:' + cmd
     state=robot.connectTCP.send(cmd)
     print state
     
@@ -739,12 +740,24 @@ def rotary_controller(rotary_id,angle1,angle2):
         if rotary_id[0]=='L':
             print rotary_id[0]
             IP='http://192.168.1.103:10001'
-        if rotary_id[0]=='R':
+            url = "%s/set_rotary_angle?rotary_id=%s&angle1=%s&angle2=%s"\
+            % (IP,str(rotary_id[1]),str(angle1),str(angle2))
+        elif rotary_id[0]=='R':
             print rotary_id[0]
             IP='http://192.168.1.102:10001'
+            url = "%s/set_rotary_angle?rotary_id=%s&angle1=%s&angle2=%s"\
+            % (IP,str(rotary_id[1]),str(angle1),str(angle2))
+        #print rotary_id[0:2]
+        if rotary_id[0:2] == 'FL' : 
+            IP='http://192.168.33.228:80'
+            url = "%s/set_rotary_angle?rotary_id=%s&angle1=%s&angle2=%s"\
+            % (IP,str(rotary_id),str(angle1), '0')
+        elif rotary_id[0:2] == 'FR': 
+            IP='http://192.168.33.228:80'
+            url = "%s/set_rotary_angle?rotary_id=%s&angle1=%s&angle2=%s"\
+            % (IP,str(rotary_id),str(angle1), '0')
         print rotary_id[1]
-        url = "%s/set_rotary_angle?rotary_id=%s&angle1=%s&angle2=%s"\
-          % (IP,str(rotary_id[1]),str(angle1),str(angle2))
+        
         print url
         page = urllib2.urlopen(url)
         ret = page.read()
@@ -1559,4 +1572,91 @@ def get_check_location_picture(robot):
         logger.error('recv robot info error')
         flag=-1
         return flag,{}
-
+#liyao 首次双目标定
+#*****************************************
+# function:   get_json_state
+# Date :
+# Discription:   返回json命令结果
+# 2017年1月13日 liyao
+#*****************************************
+def get_json_state(robot,f_tag,s_tag,t_tag):
+#     ret = robot.connectTCP.recv(1024)
+#     print ret;
+#     try:
+#         json_rcv = json.loads(ret)
+#     except:
+#         print 'get_json_state json解析失败\n'
+#         return 0
+#     if json_rcv[f_tag][s_tag][t_tag].strip()  == 'success':
+#         return 1
+#     else:
+#         return 0
+    for i in range(10):
+        try:
+            rcv = robot.connectTCP.recv(10240) #接收反馈信息
+            print 'rcv-1:'+rcv
+            rcv.replace('}{','}\r\n{')            
+            rcv_arr = rcv.split('\r\n')
+            #print 'split',rcv_arr
+            for _rcv in rcv_arr:  #分离反馈信息
+                try:
+                    #print 'split[xx]',_rcv
+                    json_rcv = json.loads(_rcv)  #识别json数组
+                    if json_rcv[f_tag][s_tag][t_tag].strip()  == 'success':
+                        return 1
+                    else:
+                        sleep(1)
+                        continue  
+                except:
+                    print ''
+        except: 
+            sleep(1)
+            continue   
+    return 0
+#*****************************************
+# function:   set_picn_location
+# Date :
+# Discription:   发送图片序号并获取转台偏移位置
+# 2017年1月13日 liyao
+#*****************************************
+def set_picn_location(robot, pic_seq): 
+    cmd_content = '"data":{"camera":{"order":"fixed_plate","picture_id":'+str(pic_seq)+'}}'
+    cmd = "{" + cmd_camera_header + "," + cmd_content + "}\r\n"
+    print 'send:' + cmd
+    state=robot.connectTCP.send(cmd)
+    return state        
+#*****************************************
+# function:   get_slipway_location
+# Date :
+# Discription:   获取滑台偏移位置
+# 2017年1月13日 liyao
+#*****************************************
+def get_slipway_location(robot):
+    for i in range(10):
+        rcv = robot.connectTCP.recv(1024)
+        print 'recv-2'+rcv;
+        try:  
+            rcv.replace('}{','}\r\n{')            
+            rcv_arr = rcv.split('\r\n')
+            #print 'split',rcv_arr
+            for _rcv in rcv_arr:  #分离反馈信息
+                try:
+                    #print 'split[xx]',_rcv
+                    json_rcv = json.loads(_rcv)  #识别json数组
+                    if json_rcv['data']['camera']['state'].strip()  == 'success':
+                        try:
+                            offset = json_rcv['data']['camera']['instance']
+                            print '滑台修正位置'+str(offset)+'\n'
+                            return offset
+                        except:
+                            print ''
+                    elif json_rcv['data']['camera']['state'].strip()  == 'fail':
+                        return 'fail'
+                except:
+                    print ''
+            sleep(1)
+            continue
+        except:
+            sleep(1)
+            continue   
+    return 'fail'       

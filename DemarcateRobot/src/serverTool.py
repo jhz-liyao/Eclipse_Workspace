@@ -4,6 +4,8 @@ PROCESS_ITEM = {'move','odometer','wheelspace','infra_ultra',\
                 'camera','move_check','wheelspace_check',}
 def process_parse(robot_cmd):
     item = ''
+    if robot_cmd == 0:
+        item = 'camera_first'
     if robot_cmd == 1:
         item = 'move'
     if robot_cmd == 2:

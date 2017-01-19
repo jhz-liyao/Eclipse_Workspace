@@ -144,6 +144,14 @@ class tcp_connect(object):
             print 'OOB-error:'+str(err)
             self.reconnect()
             return -1
+    def clean(self):
+        try:
+            while(1):
+                rcv = self.connectTCP.recv(1)
+                if not rcv:
+                    break
+        except:
+            print 'clean'
 
 
     
