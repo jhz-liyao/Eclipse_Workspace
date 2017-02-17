@@ -1,6 +1,6 @@
 #!C:\Python27\python.exe
 # -*- coding: utf-8 -*-
-PROCESS_ITEM = {'move','odometer','wheelspace','infra_ultra',\
+PROCESS_ITEM = {'camera_first','move','odometer','wheelspace','infra_ultra',\
                 'camera','move_check','wheelspace_check',}
 def process_parse(robot_cmd):
     item = ''

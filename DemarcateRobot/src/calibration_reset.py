@@ -72,8 +72,10 @@ def reset_process(robot_id,item,data):
     time.sleep(1)
     sql = 'SELECT %s FROM RobotCalibration WHERE robot_id = "%s" ' % (item,robot_id)
     sqlInterface.execute(sql)
-    ret = sqlInterface.fetchall()    
-    state = eval(ret[0][0])
+    ret = sqlInterface.fetchall()   
+    state = {'flag':0}
+    if(len(ret) > 0):
+        state = eval(ret[0][0]) 
     sqlHandle.close()
     #获取状态信息
     step = {}
@@ -96,10 +98,10 @@ def reset_process(robot_id,item,data):
     #反馈信息
     global robot_cmd
     ResponseInfo = '{"robot_id":"'+str(robot_id)+'",\
-"robot_state":{"process":'+str(robot_cmd)+',"step":"1"},\
-"message":{"process_state":{"process":"'+str(robot_cmd)+'",\
-"step":{"step_name":"'+step_name+'", "step_state":"'+step_state+'" } } },\
-"state":"'+str(response_state)+'"}\r\n'
+                    "robot_state":{"process":'+str(robot_cmd)+',"step":"1"},\
+                    "message":{"process_state":{"process":"'+str(robot_cmd)+'",\
+                    "step":{"step_name":"'+step_name+'", "step_state":"'+step_state+'" } } },\
+                    "state":"'+str(response_state)+'"}\r\n' 
     return ResponseInfo
 
 #*****************************************

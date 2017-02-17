@@ -1709,10 +1709,11 @@ def excute_camera_first_calibration(robot, item, arg):
         print '打开摄像头失败\n'
         return 0; 
     state['step_state'][0] = 2
+    sleep(2)
     #step2 拍摄图片
     while 1:
         set_picn_location(robot, pic_n)#发送图片序号并请求获取滑台位置
-        #sleep(4)
+        
         ret = get_slipway_location(robot) #获取滑台偏移量
         if ret == 'fail' : 
             state['step_state'][pic_n] = 3
@@ -1722,6 +1723,7 @@ def excute_camera_first_calibration(robot, item, arg):
         slipway_offset = float(ret)
         if slipway_offset == 0 :
             print '开始保存图片\n'
+            fail_cnt = 0
             camera_take_pic(robot,'photograph');#拍摄并保存图片
             #sleep(4)
             if get_json_state(robot, 'data', 'camera', 'state') == 1:
@@ -1738,7 +1740,6 @@ def excute_camera_first_calibration(robot, item, arg):
                 break;
             else:
                 pic_n += 1
-                sleep(1);
                 continue
         else:
             if fail_cnt == 3 :#调整失败次数满足
@@ -1746,8 +1747,7 @@ def excute_camera_first_calibration(robot, item, arg):
                 update_robot_state(robot, item, flag, data,state)
                 print '转台调整3次未到位 标定失败\n'
                 return 0
-            #rotary_flag= rotary_controller('FL0',slipway_offset,0) #控制滑台运动到指定位置 
-            rotary_flag = 0
+            rotary_flag= slipstage_controller(slipway_offset,100) #控制滑台运动到指定位置 
             if rotary_flag==3:
                 flag = 3
                 wing_move_angle(robot,"move",80)
@@ -1755,7 +1755,7 @@ def excute_camera_first_calibration(robot, item, arg):
                 update_robot_state(robot, item, 3, data,state)
                 print '滑台调整失败\n'
                 return 0
-            sleep(5)
+            sleep(3)
             fail_cnt += 1
             continue 
     state['step_state'][pic_n+1] = 2 

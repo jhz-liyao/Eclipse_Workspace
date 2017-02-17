@@ -767,7 +767,27 @@ def rotary_controller(rotary_id,angle1,angle2):
         flag=3
         logger.error('rotary connect error')
     return flag
-   
+#*****************************************
+# function:  slipstage_controller
+# Date : 
+# Discription:   滑台 控制
+# 李尧 2017年2月14日17:06:31
+#***************************************** 
+def slipstage_controller( offset, speed):
+    import urllib2    
+    try:
+        url = "http://%s/%s?com=%s&offset=%s&speed=%s"\
+        % (SLIPSTAGE_IP,SLIPSTAGE_ACTION,SLIPSTAGE_SERIAL_PORT,str(offset),str(speed))
+        print url
+        page = urllib2.urlopen(url)
+        ret = page.read()
+#         print ret
+        flag=2
+    except:
+        flag=3
+        logger.error('rotary connect error')
+    return flag
+    
 
 #*****************************************
 # function:  wheel_camera_calibration

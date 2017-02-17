@@ -1886,3 +1886,7 @@
 2017-01-18 11:05:20,707 protocol.py[line:767] [robotID:MainThread] [ERROR :rotary connect error]
 2017-01-18 11:05:21,207 protocol.py[line:767] [robotID:MainThread] [ERROR :rotary connect error]
 2017-01-18 11:15:02,848 protocol.py[line:767] [robotID:100000029424] [ERROR :rotary connect error]
+2017-02-14 17:23:06,963 protocol.py[line:788] [robotID:MainThread] [ERROR :rotary connect error]
+2017-02-16 13:53:15,605 protocol.py[line:788] [robotID:100000000822] [ERROR :rotary connect error]
+2017-02-16 14:01:19,369 protocol.py[line:788] [robotID:100000000822] [ERROR :rotary connect error]
+2017-02-16 14:01:28,872 protocol.py[line:788] [robotID:100000000822] [ERROR :rotary connect error]
