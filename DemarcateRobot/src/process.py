@@ -1758,6 +1758,7 @@ def excute_camera_first_calibration(robot, item, arg):
             sleep(3)
             fail_cnt += 1
             continue 
+    rotary_flag= slipstage_controller(-1000,100) #滑台归位
     state['step_state'][pic_n+1] = 2 
     update_robot_state(robot, item, 2, data,state)    
     print '拍照标定结束\n'
