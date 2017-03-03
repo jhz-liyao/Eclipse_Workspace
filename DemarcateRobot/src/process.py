@@ -1695,8 +1695,8 @@ def excute_camera_first_calibration(robot, item, arg):
     flag = 3
     data = {}    
     state = {}
-    state['step_name'] = [u"打开摄像头",u"标定图1",u"标定图2",u"标定图3",u"标定图4",u"标定图5",u"标定图6",u"标定图7",u"下一站"]    
-    state['step_state'] = [1,0,0,0,0,0,0,0,0]
+    state['step_name'] = [u"打开摄像头",u"标定图1",u"标定图2",u"标定图3",u"标定图4",u"标定图5",u"标定图6",u"标定图7",u"标定图8",u"标定图9",u"下一站"]    
+    state['step_state'] = [1,0,0,0,0,0,0,0,0,0,0]
     slipway_offset = 0.0
     pic_n = 1
     fail_cnt = 0;
@@ -1704,11 +1704,12 @@ def excute_camera_first_calibration(robot, item, arg):
     camera_take_pic(robot,'open_camera');
     #robot.connectTCP.clean() 
     if get_json_state(robot, 'data', 'camera', 'state') == 0:
-        state['step_state'] = [3,0,0,0,0,0,0,0,0]
+        state['step_state'] = [3,0,0,0,0,0,0,0,0,0,0]
         update_robot_state(robot, item, flag, data,state)
         print '打开摄像头失败\n'
         return 0; 
     state['step_state'][0] = 2
+    update_robot_state(robot, item, 2, data,state)
     sleep(2)
     #step2 拍摄图片
     while 1:
@@ -1736,7 +1737,7 @@ def excute_camera_first_calibration(robot, item, arg):
                 print '图片保存失败\n'
                 return 0    
             print '第%d张照片标定完毕\n'%pic_n
-            if pic_n == 7 :#拍照结束
+            if pic_n == 9 :#拍照结束
                 break;
             else:
                 pic_n += 1
@@ -1754,11 +1755,10 @@ def excute_camera_first_calibration(robot, item, arg):
                 state['step_state'][pic_n] = 3
                 update_robot_state(robot, item, 3, data,state)
                 print '滑台调整失败\n'
-                return 0
-            sleep(3)
+                return 0 
             fail_cnt += 1
             continue 
-    rotary_flag= slipstage_controller(-1000,100) #滑台归位
+    rotary_flag= slipstage_controller(0.5 ,50) #滑台归位
     state['step_state'][pic_n+1] = 2 
     update_robot_state(robot, item, 2, data,state)    
     print '拍照标定结束\n'

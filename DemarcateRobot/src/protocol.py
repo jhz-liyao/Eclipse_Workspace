@@ -780,8 +780,11 @@ def slipstage_controller( offset, speed):
         % (SLIPSTAGE_IP,SLIPSTAGE_ACTION,SLIPSTAGE_SERIAL_PORT,str(offset),str(speed))
         print url
         page = urllib2.urlopen(url)
-        ret = page.read()
-#         print ret
+        ret = page.read() 
+        if(ret.find('OK') > 0):
+            print '滑台到位反馈:OK'
+        elif(ret.find('TIMEOUT') > 0):
+            print '滑台到位反馈:TIMEOUT'    #raise Exception("访问超时") 
         flag=2
     except:
         flag=3
@@ -1679,4 +1682,4 @@ def get_slipway_location(robot):
         except:
             sleep(1)
             continue   
-    return 'fail'       
+    return 'fail'

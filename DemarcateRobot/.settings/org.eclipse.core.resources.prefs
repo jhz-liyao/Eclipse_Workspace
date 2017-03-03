@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/CAMERAtakePIC.py=utf-8
 encoding//src/calibration_reset.py=UTF-8
+encoding//src/camera_calibration.py=utf-8
 encoding//src/camera_calibration_new.py=utf-8
 encoding//src/computer_shutdown.py=utf-8
 encoding//src/get_robot_state.py=utf-8

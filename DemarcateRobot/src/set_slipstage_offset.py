@@ -9,12 +9,11 @@ import cgi, cgitb
 
 def set_rotary_angle(COMx, motor_offset, motor_speed): 
     try:
-        UART_COM = serial.Serial(COMx, 115200)
+        UART_COM = serial.Serial(COMx, 9600)
         print COMx
     except:
         return 'open %s error'%COMx
-    try: 
-        COM_SET = ['1','2','3','4','5','6']        
+    try:       
         UART_COM.flushInput()
         UART_COM.flushOutput()
         #-----------motor1---------
@@ -36,13 +35,28 @@ def set_rotary_angle(COMx, motor_offset, motor_speed):
 #         decimals = int(decimals)
         #m_id = chr(int(motor_id))            
         #strCMD = '\xfd\x01'+chr(motor_dir)+chr(integer>>8) + chr(integer|0xff) + chr(decimals >> 8) + chr(decimals|0xff) + chr(motor_speed) + '\x00\xf8'
-        strCMD = '\xfd\x01'+chr(motor_dir)+chr(integer>>8)+ chr(integer&0xff) + chr(decimals >> 8) + chr(decimals&0xff) + chr(motor_speed) + '\x00\xf8'
+        #运动到中点
+        if motor_offset > 0.49 and motor_offset < 0.51 and motor_speed == 50:
+            strCMD = '\xfd\x03\x00\x00\xf8'
+        else:
+            strCMD = '\xfd\x01'+chr(motor_dir)+chr(integer>>8)+ chr(integer&0xff) + chr(decimals >> 8) + chr(decimals&0xff) + chr(motor_speed) + '\x00\xf8'
         
-        UART_COM.write(strCMD)           
-        time.sleep(0.5)
-        ret = str(UART_COM.read(UART_COM.inWaiting()))
-        ret = ret.decode('gb2312')
-#         print ret.encode('UTF-8')    
+        UART_COM.write(strCMD)
+        TimeOut_Cnt = 10  #超时计时5S
+        print "Start : %s" % time.ctime()
+        while True:
+            time.sleep(0.5)
+            TimeOut_Cnt-=1
+            ret = ''
+            ret += str(UART_COM.read(UART_COM.inWaiting()))
+            #ret = ret.decode('gb2312')
+            if(ret.find('OK') > 0):
+                print 'OK'
+                break
+            elif(TimeOut_Cnt == 0):
+                print 'TIMEOUT'
+                break 
+        print "End : %s" % time.ctime()
         rcv = ''#ret.split(',')
         j_s = {}
         for s in rcv:
@@ -60,15 +74,14 @@ def set_rotary_angle(COMx, motor_offset, motor_speed):
         print 'b' 
 
 data= cgi.FieldStorage()
-data1 = data.getvalue('com', 'com1')
+data1 = data.getvalue('com', 'com2')
 data2 = data.getvalue('offset', '0')
 data3 = data.getvalue('speed', '0')
+  
+# data1 = 'com6'
+# data2 = 0.5
+# data3 = 50
 
-# data2 = float(data2)
-
-# data1 = 'com2'
-# data2 = 19.9287654
-# data3 = 100
 
 offset = float(data2)
 offset = round(offset,1)
